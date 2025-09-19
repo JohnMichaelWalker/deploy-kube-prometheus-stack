@@ -1,4 +1,4 @@
-name: Deploy Garden
+name: Deploy kube-prom-stack
 
 on:
   push:
