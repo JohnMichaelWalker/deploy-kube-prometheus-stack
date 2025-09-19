@@ -12,7 +12,7 @@ jobs:
     env:
       HELM_RELEASE: prom-stack
       NAMESPACE: monitoring
-      CHART: prometheus-community/kube-prometheus-stack
+      CHART: kube-prometheus-stack
       REPO: https://prometheus-community.github.io/helm-charts
     runs-on: ubuntu-latest
 
