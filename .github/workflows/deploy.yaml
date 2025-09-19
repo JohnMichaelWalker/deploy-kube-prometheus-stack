@@ -39,6 +39,7 @@ jobs:
       - name: Deploy Helm chart to EKS
         run: |
           helm upgrade --install ${{ env.HELM_RELEASE }} ${{ env.CHART }} \
+            --repo ${{ env.REPO }} \
             --namespace ${{ env.NAMESPACE }} --create-namespace \
             -f values.yaml
 
