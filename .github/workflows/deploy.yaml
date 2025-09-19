@@ -1,0 +1,46 @@
+name: Deploy Garden
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  
+  deploy:
+    env:
+      HELM_RELEASE: prom-stack
+      NAMESPACE: monitoring
+      CHART: prometheus-community/kube-prometheus-stack
+      REPO: https://prometheus-community.github.io/helm-charts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Set up helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Deploy Helm chart to EKS
+        run: |
+          helm upgrade --install ${{ env.HELM_RELEASE }} ${{ env.CHART }} \
+            --namespace ${{ env.NAMESPACE }} --create-namespace \
+            -f values.yaml
+
+        
+  
